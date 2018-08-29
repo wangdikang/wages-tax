@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>2019个税调整计算</title>
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<style>
+		.main{
+			width: 400px;
+			margin: 100px auto;
+		}
+		.gs-title{
+			text-align: center;
+			margin: 30px 0 0;
+		}
+		.gs-tips{
+			text-align: center;
+			color: #ccc;
+		}
+		.results{
+			margin: 30px 0;
+		}
+		.hide{
+			display: none;
+		}
+		.red{
+			color: crimson;
+		}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<h2 class="gs-title">2019个税调整计算</h2>
+		<h6 class="gs-tips">注：与实际有差异以请实际为准</h6>
+		<div class="form-group">
+			<label for="money">税前收入：</label>
+			<input type="text" class="form-control" id="money" placeholder="请填写税前收入">
+		</div>
+		<div class="form-group">
+			<label for="reduce">五险一金扣除：</label>
+			<input type="text" class="form-control" id="reduce" placeholder="请填写五险一金扣除金额">
+		</div>
+		<button class="btn btn-primary compute" style="width: 100%;">计算</button>
+		<div class="results hide">
+			<h3>调整前税后收入：</h3>
+			<h3 class="red before">元</h3>
+			<h3>调整后税后收入：</h3>
+			<h3 class="red after">元</h3>
+			<h3>多得：</h3>
+			<h3 class="red more">元</h3>
+		</div>
+	</div>
+</body>
+<script>
+	const btn= document.querySelector('.compute')
+	const money= document.querySelector('#money')
+	const reduce= document.querySelector('#reduce')
+	const results= document.querySelector('.results')
+	const before= document.querySelector('.before')
+	const after= document.querySelector('.after')
+	const more= document.querySelector('.more')
+	btn.onclick = function () {
+		if(+money.value && +reduce.value) {
+			const oldMoney = lodGS(+money.value - +reduce.value)
+			const newMoney = newGS(+money.value - +reduce.value)
+			before.innerHTML = oldMoney + '元'
+			after.innerHTML = newMoney + '元'
+			more.innerHTML = (newMoney - oldMoney).toFixed(2) + '元'
+			results.classList.remove('hide')
+		} else {
+			alert('请输入正确的金额')
+		}
+	}
+	// 旧规
+	function lodGS (money) {
+		let num = 0 // 累加扣除额
+		let count = money - 3500 // 应税额
+		console.log('应税总额 - 前：', count)
+		if (count > 80000) {
+			num += (count - 80000) * 0.45
+			count = 80000
+		}
+		if (count > 55000) {
+			num += (count - 55000) * 0.35
+			count = 55000
+		}
+		if (count > 35000 ) {
+			num += (count - 35000) * 0.30
+			count = 35000
+		}
+		if (count > 9000) {
+			num += (count - 9000) * 0.25
+			count = 9000
+		}
+		if (count > 4500) {
+			num += (count - 4500) * 0.20
+			count = 4500
+		}
+		if (count > 1500) {
+			num += (count - 1500) * 0.10
+			count = 1500
+		}
+		if (count <= 1500) {
+			num += (count - 1500) * 0.03
+		}
+		return money - num
+	}
+	// 新规
+	function newGS (money) {
+		let num = 0 // 累加扣除额
+		let count = money - 5000 // 应税额
+		console.log('应税总额 - 后：', count)
+		if (count > 80000) {
+			num += (count - 80000) * 0.45
+			count = 80000
+		}
+		if (count > 55000) {
+			num += (count - 55000) * 0.35
+			count = 55000
+		}
+		if (count > 35000 ) {
+			num += (count - 35000) * 0.30
+			count = 35000
+		}
+		if (count > 25000) {
+			num += (count - 25000) * 0.25
+			count = 25000
+		}
+		if (count > 12000) {
+			num += (count - 12000) * 0.20
+			count = 12000
+		}
+		if (count > 3000) {
+			num += (count - 3000) * 0.10
+			count = 3000
+		}
+		if (count <= 3000) {
+			num += (count - 3000) * 0.03
+		}
+		return money - num
+	}
+</script>
+</html>
