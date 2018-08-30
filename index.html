@@ -31,7 +31,7 @@
 <body>
 	<div class="main">
 		<h2 class="gs-title">2019个税调整计算</h2>
-		<h6 class="gs-tips">注：与实际有差异以请实际为准</h6>
+		<h6 class="gs-tips">注：与实际有差异请以实际为准</h6>
 		<div class="form-group">
 			<label for="money">税前收入：</label>
 			<input type="text" class="form-control" id="money" placeholder="请填写税前收入">
@@ -60,21 +60,27 @@
 	const after= document.querySelector('.after')
 	const more= document.querySelector('.more')
 	btn.onclick = function () {
-		if(+money.value && +reduce.value) {
+		const m = money.value
+		const r = reduce.value
+		const reg = /^[0-9]+(.[0-9]{0,2})?$/
+		if(!reg.test(m) || !reg.test(r) || m < 0 || r < 0) {
+			alert('请输入正确的金额')
+		} else if (+m < +r) {
+			alert('扣除不可大于税前收入')
+		} else {
 			const oldMoney = lodGS(+money.value - +reduce.value)
 			const newMoney = newGS(+money.value - +reduce.value)
 			before.innerHTML = oldMoney + '元'
 			after.innerHTML = newMoney + '元'
 			more.innerHTML = (newMoney - oldMoney).toFixed(2) + '元'
 			results.classList.remove('hide')
-		} else {
-			alert('请输入正确的金额')
 		}
 	}
 	// 旧规
 	function lodGS (money) {
 		let num = 0 // 累加扣除额
 		let count = money - 3500 // 应税额
+		if (count <=  0) return money 
 		console.log('应税总额 - 前：', count)
 		if (count > 80000) {
 			num += (count - 80000) * 0.45
@@ -101,7 +107,7 @@
 			count = 1500
 		}
 		if (count <= 1500) {
-			num += (count - 1500) * 0.03
+			num += count * 0.03
 		}
 		return money - num
 	}
@@ -109,6 +115,7 @@
 	function newGS (money) {
 		let num = 0 // 累加扣除额
 		let count = money - 5000 // 应税额
+		if (count <=  0) return money 
 		console.log('应税总额 - 后：', count)
 		if (count > 80000) {
 			num += (count - 80000) * 0.45
@@ -135,7 +142,7 @@
 			count = 3000
 		}
 		if (count <= 3000) {
-			num += (count - 3000) * 0.03
+			num += count * 0.03
 		}
 		return money - num
 	}
